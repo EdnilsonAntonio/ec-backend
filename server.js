@@ -11,15 +11,19 @@ const PORT = process.env.PORT || 3001;
 
 /* ROTA PRINCIPAL */
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
     try {
+        console.log('Recebendo requisição');
+        // Exemplo de uma operação no banco de dados
+        const result = await someDatabaseOperation();
+        console.log('Resultado da operação:', result);
         res.json("Hello, world!");
-    }
-    catch (error) {
-        console.error('Erro ao responder ao endpoint:', error);  // Para o backend, use console.error
+    } catch (error) {
+        console.error('Erro ao responder ao endpoint:', error);
         res.status(500).json({ error: 'Erro ao responder ao endpoint', details: error.message });
     }
 });
+
 
 
 /* ROTAS DE CURSOS */
