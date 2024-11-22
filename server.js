@@ -12,7 +12,13 @@ const PORT = process.env.PORT || 3001;
 /* ROTA PRINCIPAL */
 
 app.get('/', (req, res) => {
-    return res.json("Hello, world!");
+    try {
+        res.json("Hello, world!");
+    }
+    catch (error) {
+        console.error('Erro ao responder ao endpoint:', error);
+        res.status(500).json({ error: 'Erro ao responder ao endpoint', details: error.message });
+    }
 })
 
 /* ROTAS DE CURSOS */
