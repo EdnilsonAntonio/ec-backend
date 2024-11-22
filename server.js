@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
     catch (error) {
         console.error('Erro ao responder ao endpoint:', error);
         res.status(500).json({ error: 'Erro ao responder ao endpoint', details: error.message });
+        alert('Error: ' + error.message)
     }
 })
 
