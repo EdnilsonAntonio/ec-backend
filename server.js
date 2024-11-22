@@ -21,9 +21,6 @@ app.get('/', async (req, res) => {
     }
 });
 
-
-
-
 /* ROTAS DE CURSOS */
 
 // Obter todos os cursos
