@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId // ID único para o usuário com o mapeamento necessário para MongoDB
+  name      String
+  email     String    @unique
+  password  String
+  progress  Progress[] // Relação com progresso do usuário
+}
+
+model Course {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId // ID único para o curso com mapeamento para MongoDB
+  index    Int      // Índice para ordenar os cursos
+  name     String
+  modules  Module[] // Relação de um curso com vários módulos
+  progress Progress[] // Adicionando relação oposta para progresso
+}
+
+model Module {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId // ID único para o módulo com mapeamento para MongoDB
+  index    Int      // Índice para ordenar os módulos dentro do curso
+  name     String
+  courseId String   @db.ObjectId // Chave estrangeira para associar o módulo a um curso
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons  Lesson[] // Relação de um módulo com várias lições
+  progress Progress[] // Adicionando relação oposta para progresso
+}
+
+model Lesson {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // ID único para a lição com mapeamento para MongoDB
+  index     Int      // Índice para ordenar as lições dentro do módulo
+  type      String   // Tipo de lição (por exemplo, "Normal" ou "Project")
+  title     String
+  content   String
+  moduleId  String   @db.ObjectId // Chave estrangeira para associar a lição a um módulo
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress  Progress[] // Adicionando relação oposta para progresso
+}
+
+model Progress {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId // ID único para o progresso do usuário com mapeamento para MongoDB
+  userId    String   @db.ObjectId // ID do usuário que está progredindo
+  courseId  String   @db.ObjectId // ID do curso no qual o progresso está sendo registrado
+  moduleId  String   @db.ObjectId // ID do módulo no qual o progresso está sendo registrado
+  lessonId  String   @db.ObjectId // ID da lição no qual o progresso está sendo registrado
+  progress  Int      // Percentual de progresso de 0 a 100
+  completion Boolean // Estado de conclusão da lição (true ou false)
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId, moduleId, lessonId]) // Garante que o usuário tenha um progresso único para cada curso, módulo e lição
+}
+
+
+
+
+
+
