@@ -16,11 +16,11 @@ app.get('/', (req, res) => {
         res.json("Hello, world!");
     }
     catch (error) {
-        console.error('Erro ao responder ao endpoint:', error);
+        console.error('Erro ao responder ao endpoint:', error);  // Para o backend, use console.error
         res.status(500).json({ error: 'Erro ao responder ao endpoint', details: error.message });
-        alert('Error: ' + error.message)
     }
-})
+});
+
 
 /* ROTAS DE CURSOS */
 
